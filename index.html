@@ -52,6 +52,8 @@
 
 <!-- ---------- App shell ---------- -->
 <div id="appShell" class="app-shell hidden">
+
+  <!-- ডেস্কটপ সাইডবার — শুধু বড় স্ক্রিনে দেখা যাবে -->
   <aside class="sidebar">
     <div class="sidebar-brand">
       <i class="fa-solid fa-book-quran"></i>
@@ -61,7 +63,7 @@
       <button class="nav-item" data-view="overview"><i class="fa-solid fa-gauge-high"></i> ওভারভিউ</button>
       <button class="nav-item" data-view="users"><i class="fa-solid fa-users"></i> ইউজার ম্যানেজমেন্ট</button>
       <button class="nav-item" data-view="errors"><i class="fa-solid fa-triangle-exclamation"></i> এরর মনিটর
-        <span id="errorNavBadge" class="nav-badge hidden">0</span>
+        <span class="nav-badge error-badge hidden">0</span>
       </button>
     </nav>
     <div class="sidebar-footer">
@@ -69,6 +71,15 @@
       <button id="logoutBtn" class="btn ghost full small"><i class="fa-solid fa-right-from-bracket"></i> লগ আউট</button>
     </div>
   </aside>
+
+  <!-- মোবাইল টপ-বার — শুধু ছোট স্ক্রিনে দেখা যাবে -->
+  <header class="mobile-topbar">
+    <div class="sidebar-brand">
+      <i class="fa-solid fa-book-quran"></i>
+      <span>AlQuran <b>Admin</b></span>
+    </div>
+    <button id="logoutBtnMobile" class="icon-btn" title="লগ আউট"><i class="fa-solid fa-right-from-bracket"></i></button>
+  </header>
 
   <main class="main-area">
     <!-- ===== Overview ===== -->
@@ -131,6 +142,20 @@
       </div>
     </section>
   </main>
+
+  <!-- মোবাইল বটম নেভিগেশন — শুধু ছোট স্ক্রিনে দেখা যাবে -->
+  <nav class="bottom-nav">
+    <button class="nav-item" data-view="overview">
+      <i class="fa-solid fa-gauge-high"></i><span>ওভারভিউ</span>
+    </button>
+    <button class="nav-item" data-view="users">
+      <i class="fa-solid fa-users"></i><span>ইউজার</span>
+    </button>
+    <button class="nav-item" data-view="errors">
+      <i class="fa-solid fa-triangle-exclamation"></i><span>এরর</span>
+      <span class="nav-badge error-badge hidden">0</span>
+    </button>
+  </nav>
 </div>
 
 <!-- ===== User detail drawer ===== -->
