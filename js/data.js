@@ -111,6 +111,30 @@ async function clearProfileField(uid, field){
   await fbDb.collection('users').doc(uid).update({ [field]: '' });
 }
 
+// ---------- স্ট্যাটাস / স্টোরি মডারেশন (WhatsApp-স্টাইল, js/status.js) ----------
+// লাইভ (এখনো এক্সপায়ার হয়নি এমন) সব স্ট্যাটাস রিয়েল-টাইমে দেখা ও দরকার
+// হলে মুছে ফেলার জন্য। Firestore rules-এ isAdmin()-কে delete পারমিশন আগে
+// থেকেই দেওয়া আছে (js/status.js-এ ডকুমেন্টেড rules দেখুন)।
+let unsubscribeStatuses = null;
+
+function listenStatuses(callback){
+  if(unsubscribeStatuses) unsubscribeStatuses();
+  unsubscribeStatuses = fbDb.collection('statuses')
+    .orderBy('createdAt', 'desc')
+    .limit(300)
+    .onSnapshot(snap => {
+      const statuses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      callback(statuses);
+    }, err => {
+      console.error('Status listener failed:', err);
+      callback([], err);
+    });
+}
+
+async function deleteStatusDoc(id){
+  await fbDb.collection('statuses').doc(id).delete();
+}
+
 // ---------- Error / incident log ----------
 // main app-এর js/error-logger.js এই কালেকশনে লেখে। এখানে শুধু পড়া/
 // resolve করা/মুছে ফেলা হয়।
