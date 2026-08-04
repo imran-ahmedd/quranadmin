@@ -1,5 +1,5 @@
-// ---------- ছোট hash-router: overview / users / errors / sessions ----------
-const VIEWS = ['overview', 'users', 'errors'];
+// ---------- ছোট hash-router: overview / users / errors / statuses ----------
+const VIEWS = ['overview', 'users', 'errors', 'statuses'];
 
 function navigateTo(view){
   if(!VIEWS.includes(view)) view = 'overview';
@@ -20,6 +20,7 @@ function renderView(){
   if(target === 'overview' && typeof renderOverview === 'function') renderOverview();
   if(target === 'users' && typeof renderUsers === 'function') renderUsers();
   if(target === 'errors' && typeof renderErrors === 'function') renderErrors();
+  if(target === 'statuses' && typeof renderStatuses === 'function') renderStatuses();
 }
 
 window.addEventListener('hashchange', renderView);
