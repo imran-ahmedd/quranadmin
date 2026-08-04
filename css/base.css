@@ -111,6 +111,9 @@ code{ background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 6px; 
 .admin-chip i{ color: var(--teal); }
 
 .main-area{ flex: 1; padding: 30px 34px; max-width: 1100px; }
+
+/* ---------- Mobile top bar + bottom nav (hidden on desktop) ---------- */
+.mobile-topbar, .bottom-nav{ display: none; }
 .view-header{ margin-bottom: 22px; }
 .view-header h2{ font-size: 1.5rem; margin-bottom: 4px; }
 
@@ -134,12 +137,35 @@ code{ background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 6px; 
 }
 
 @media (max-width: 860px){
-  .app-shell{ flex-direction: column; }
-  .sidebar{ width: 100%; height: auto; position: static; flex-direction: row; align-items: center; padding: 12px 16px; }
-  .sidebar-brand{ padding: 0; margin-inline-end: 14px; }
-  .sidebar-nav{ flex-direction: row; overflow-x: auto; flex: 1; }
-  .nav-item span{ display: none; }
-  .sidebar-footer{ border: none; flex-direction: row; }
-  .admin-chip span{ display: none; }
-  .main-area{ padding: 20px 16px; max-width: 100%; }
+  .app-shell{ display: block; }
+
+  /* ডেস্কটপ সাইডবার সরিয়ে ফেলা হচ্ছে, বদলে টপ-বার + বটম-নেভ */
+  .sidebar{ display: none; }
+
+  .mobile-topbar{
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 20;
+    background: var(--bg-elevated); border-bottom: 1px solid var(--border);
+    padding: 12px 16px;
+  }
+  .mobile-topbar .sidebar-brand{ padding: 0; }
+
+  .main-area{ padding: 18px 14px 90px; max-width: 100%; }
+
+  .bottom-nav{
+    display: flex;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+    background: var(--bg-elevated); border-top: 1px solid var(--border);
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  }
+  .bottom-nav .nav-item{
+    flex: 1; flex-direction: column; align-items: center; gap: 3px;
+    padding: 7px 4px; text-align: center; position: relative;
+  }
+  .bottom-nav .nav-item i{ font-size: 1.15rem; width: auto; }
+  .bottom-nav .nav-item span{ font-size: 0.7rem; }
+  .bottom-nav .nav-badge{
+    position: absolute; top: 2px; right: 22%;
+    margin: 0;
+  }
 }
