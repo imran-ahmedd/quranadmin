@@ -101,13 +101,13 @@ async function renderOverview(){
         {
           label: 'পড়ার মিনিট (সব ইউজার মিলিয়ে)',
           data: daily.map(d => d.minutes),
-          borderColor: '#c9973a',
-          backgroundColor: 'rgba(201,151,58,0.12)',
+          borderColor: '#d7a34d',
+          backgroundColor: 'rgba(215,163,77,0.12)',
           tension: 0.35,
           fill: true,
           pointRadius: daily.map(d => errorsByDate[d.date] ? 5 : 2),
-          pointBackgroundColor: daily.map(d => errorsByDate[d.date] ? '#e5484d' : '#c9973a'),
-          pointBorderColor: daily.map(d => errorsByDate[d.date] ? '#e5484d' : '#c9973a'),
+          pointBackgroundColor: daily.map(d => errorsByDate[d.date] ? '#ef4a4f' : '#d7a34d'),
+          pointBorderColor: daily.map(d => errorsByDate[d.date] ? '#ef4a4f' : '#d7a34d'),
         }
       ]
     },
