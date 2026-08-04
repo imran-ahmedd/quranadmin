@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlQuran Admin — কন্ট্রোল রুম</title>
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/users.css">
+<link rel="stylesheet" href="css/errors.css">
+</head>
+<body>
+
+<!-- ---------- Login ---------- -->
+<div id="loginView" class="screen">
+  <div class="login-card">
+    <div class="login-brand">
+      <i class="fa-solid fa-book-quran"></i>
+      <div>
+        <h1>AlQuran Admin</h1>
+        <p>কন্ট্রোল রুম</p>
+      </div>
+    </div>
+    <form id="loginForm">
+      <label>ইমেইল
+        <input type="email" id="loginEmail" required autocomplete="username">
+      </label>
+      <label>পাসওয়ার্ড
+        <input type="password" id="loginPassword" required autocomplete="current-password">
+      </label>
+      <p id="loginError" class="form-error"></p>
+      <button type="submit" id="loginBtn" class="btn primary full">প্রবেশ করুন</button>
+    </form>
+    <p class="login-hint">শুধুমাত্র <b>admins</b> কালেকশনে যোগ করা অ্যাকাউন্ট দিয়ে প্রবেশ করা যাবে।</p>
+  </div>
+</div>
+
+<!-- ---------- Access denied ---------- -->
+<div id="deniedView" class="screen hidden">
+  <div class="login-card">
+    <i class="fa-solid fa-lock denied-icon"></i>
+    <h2>প্রবেশাধিকার নেই</h2>
+    <p>এই অ্যাকাউন্ট এডমিন তালিকায় নেই। Firestore-এর <code>admins/&lt;uid&gt;</code> ডকুমেন্ট যোগ করুন।</p>
+    <button id="backToLoginBtn" class="btn full">লগ আউট</button>
+  </div>
+</div>
+
+<!-- ---------- App shell ---------- -->
+<div id="appShell" class="app-shell hidden">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <i class="fa-solid fa-book-quran"></i>
+      <span>AlQuran <b>Admin</b></span>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item" data-view="overview"><i class="fa-solid fa-gauge-high"></i> ওভারভিউ</button>
+      <button class="nav-item" data-view="users"><i class="fa-solid fa-users"></i> ইউজার ম্যানেজমেন্ট</button>
+      <button class="nav-item" data-view="errors"><i class="fa-solid fa-triangle-exclamation"></i> এরর মনিটর
+        <span id="errorNavBadge" class="nav-badge hidden">0</span>
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="admin-chip"><i class="fa-solid fa-user-shield"></i> <span id="adminName">—</span></div>
+      <button id="logoutBtn" class="btn ghost full small"><i class="fa-solid fa-right-from-bracket"></i> লগ আউট</button>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <!-- ===== Overview ===== -->
+    <section id="view-overview" class="view">
+      <header class="view-header">
+        <h2>ওভারভিউ</h2>
+        <p class="muted">অ্যাপের সার্বিক স্বাস্থ্য ও ব্যবহারের সংক্ষিপ্ত চিত্র</p>
+      </header>
+      <div id="statCards" class="stat-grid"></div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3><i class="fa-solid fa-heart-pulse"></i> সিস্টেম পালস — গত ১৪ দিন</h3>
+          <p class="muted small">লাল বিন্দু = ঐ দিন কোনো এরর লগ হয়েছে</p>
+        </div>
+        <div id="pulseChartWrap" class="chart-wrap"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3><i class="fa-solid fa-bell"></i> সাম্প্রতিক ইনসিডেন্ট</h3>
+        </div>
+        <div id="incidentsList" class="incidents-list"></div>
+      </div>
+    </section>
+
+    <!-- ===== Users ===== -->
+    <section id="view-users" class="view hidden">
+      <header class="view-header">
+        <h2>ইউজার ম্যানেজমেন্ট</h2>
+        <p class="muted">সব ইউজার, তাদের অগ্রগতি এবং লগইন সেশন দেখুন ও পরিচালনা করুন</p>
+      </header>
+      <div class="panel">
+        <input type="text" id="userSearch" class="search-box" placeholder="নাম বা ইমেইল দিয়ে খুঁজুন...">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>নাম</th><th>ইমেইল</th><th>স্ট্রিক</th><th>আয়াত পঠিত</th><th>শেষ সিঙ্ক</th></tr></thead>
+            <tbody id="usersTbody"><tr><td colspan="5" class="loading">লোড হচ্ছে...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Errors ===== -->
+    <section id="view-errors" class="view hidden">
+      <header class="view-header">
+        <h2>এরর মনিটর</h2>
+        <p class="muted">অ্যাপে বাস্তব সময়ে যা কিছু ভুল হচ্ছে, সব এখানে</p>
+      </header>
+      <div class="panel">
+        <div class="errors-toolbar">
+          <div class="error-filters">
+            <button class="error-filter-btn active" data-filter="open">খোলা</button>
+            <button class="error-filter-btn" data-filter="resolved">সমাধান হয়েছে</button>
+            <button class="error-filter-btn" data-filter="all">সব</button>
+          </div>
+          <button id="clearResolvedBtn" class="btn small ghost">সমাধান হওয়াগুলো মুছুন</button>
+        </div>
+        <div id="errorsList" class="errors-list"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ===== User detail drawer ===== -->
+<div id="userDrawer" class="drawer hidden">
+  <div class="drawer-panel">
+    <button id="closeDrawerBtn" class="icon-btn drawer-close"><i class="fa-solid fa-xmark"></i></button>
+    <div id="userDrawerBody"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="js/firebase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/data.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/users.js"></script>
+<script src="js/errors.js"></script>
+<script src="js/router.js"></script>
+</body>
+</html>
