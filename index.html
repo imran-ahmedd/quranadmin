@@ -7,7 +7,7 @@
 <link rel="icon" href="icons/icon-192.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/login.css">
 <link rel="stylesheet" href="css/dashboard.css">
@@ -61,6 +61,7 @@
       <i class="fa-solid fa-book-quran"></i>
       <span>AlQuran <b>Admin</b></span>
     </div>
+    <div class="sidebar-status"><span class="pulse-dot"></span> সিস্টেম লাইভ · কন্ট্রোল রুম</div>
     <nav class="sidebar-nav">
       <button class="nav-item" data-view="overview"><i class="fa-solid fa-gauge-high"></i> ওভারভিউ</button>
       <button class="nav-item" data-view="users"><i class="fa-solid fa-users"></i> ইউজার ম্যানেজমেন্ট</button>
@@ -90,6 +91,7 @@
     <!-- ===== Overview ===== -->
     <section id="view-overview" class="view">
       <header class="view-header">
+        <span class="view-eyebrow">OVERVIEW</span>
         <h2>ওভারভিউ</h2>
         <p class="muted">অ্যাপের সার্বিক স্বাস্থ্য ও ব্যবহারের সংক্ষিপ্ত চিত্র</p>
       </header>
@@ -114,6 +116,7 @@
     <!-- ===== Users ===== -->
     <section id="view-users" class="view hidden">
       <header class="view-header">
+        <span class="view-eyebrow">USERS</span>
         <h2>ইউজার ম্যানেজমেন্ট</h2>
         <p class="muted">সব ইউজার, তাদের অগ্রগতি এবং লগইন সেশন দেখুন ও পরিচালনা করুন</p>
       </header>
@@ -139,6 +142,7 @@
     <!-- ===== স্টোরি মডারেশন ===== -->
     <section id="view-statuses" class="view hidden">
       <header class="view-header">
+        <span class="view-eyebrow">MODERATION</span>
         <h2>স্টোরি মডারেশন</h2>
         <p class="muted">WhatsApp-স্টাইল স্ট্যাটাস/স্টোরিতে সবাই যা পোস্ট করছে, লাইভ দেখুন — অনুপযুক্ত কিছু পেলে সাথে সাথে মুছুন বা ইউজারকে সীমিত/ব্লক করুন</p>
       </header>
@@ -158,6 +162,7 @@
     <!-- ===== Errors ===== -->
     <section id="view-errors" class="view hidden">
       <header class="view-header">
+        <span class="view-eyebrow">MONITOR</span>
         <h2>এরর মনিটর</h2>
         <p class="muted">অ্যাপে বাস্তব সময়ে যা কিছু ভুল হচ্ছে, সব এখানে</p>
       </header>
