@@ -40,6 +40,9 @@ loginForm.addEventListener('submit', async (e) => {
 document.getElementById('logoutBtn').addEventListener('click', () => {
   fbAuth.signOut();
 });
+document.getElementById('logoutBtnMobile')?.addEventListener('click', () => {
+  fbAuth.signOut();
+});
 
 document.getElementById('backToLoginBtn')?.addEventListener('click', () => {
   fbAuth.signOut();
