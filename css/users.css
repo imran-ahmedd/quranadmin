@@ -43,3 +43,20 @@ tbody td{ padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 }
 .session-row i{ color: var(--teal); }
 .session-meta{ flex: 1; font-size: 0.85rem; }
+
+.drawer h4{ font-size: 0.85rem; color: var(--muted); margin: 18px 0 8px; text-transform: uppercase; letter-spacing: .03em; }
+
+.feature-tags{ display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+.feature-tag{
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(47,111,97,0.14); border: 1px solid rgba(47,111,97,0.35);
+  color: #8fd6c4; font-size: 0.78rem; padding: 5px 10px; border-radius: 20px;
+}
+.feature-tag i{ font-size: 0.75rem; }
+
+.activity-log{ display: flex; flex-direction: column; gap: 6px; margin-bottom: 22px; max-height: 260px; overflow-y: auto; }
+.activity-row{ display: flex; align-items: center; gap: 8px; font-size: 0.78rem; }
+.activity-date{ width: 74px; color: var(--muted); flex-shrink: 0; }
+.activity-bar-wrap{ flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
+.activity-bar{ display: block; height: 100%; background: linear-gradient(90deg, var(--teal), var(--gold)); border-radius: 4px; }
+.activity-min{ width: 58px; text-align: left; color: var(--muted); flex-shrink: 0; }
