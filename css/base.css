@@ -1,0 +1,145 @@
+/* ---------- Design tokens ----------
+   Control-room dark theme, sharing the AlQuran app's own palette
+   (teal #2f6f61 / gold #c9973a) so the admin repo feels like the
+   same product's "back office", not a generic dashboard template.
+*/
+:root{
+  --bg: #0e1420;
+  --bg-elevated: #141b29;
+  --panel: #161e2e;
+  --border: rgba(255,255,255,0.08);
+  --text: #e7eaf2;
+  --muted: #8892a6;
+  --gold: #c9973a;
+  --teal: #2f6f61;
+  --red: #e5484d;
+  --red-glow: rgba(229,72,77,0.18);
+  --radius: 14px;
+  --font-display: 'Space Grotesk', 'Hind Siliguri', sans-serif;
+  --font-body: 'Hind Siliguri', system-ui, sans-serif;
+}
+
+*{ box-sizing: border-box; }
+html,body{ height:100%; margin:0; }
+body{
+  background: radial-gradient(1200px 600px at 10% -10%, rgba(47,111,97,0.15), transparent),
+              radial-gradient(1000px 500px at 100% 0%, rgba(201,151,58,0.10), transparent),
+              var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+h1,h2,h3,h4{ font-family: var(--font-display); margin: 0; }
+p{ margin: 0; }
+.hidden{ display: none !important; }
+.muted{ color: var(--muted); }
+.small{ font-size: 0.82rem; }
+code{ background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 6px; }
+
+.screen{
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+
+/* ---------- Buttons ---------- */
+.btn{
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 11px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+.btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,0.18); }
+.btn:active{ transform: translateY(0); }
+.btn.primary{ background: linear-gradient(135deg, var(--gold), #b3822f); border-color: transparent; color: #191305; }
+.btn.ghost{ background: transparent; }
+.btn.danger{ background: rgba(229,72,77,0.12); border-color: rgba(229,72,77,0.35); color: #ff8a8e; }
+.btn.full{ width: 100%; justify-content: center; }
+.btn.small{ padding: 7px 12px; font-size: 0.82rem; }
+.btn:disabled{ opacity: .6; cursor: default; transform: none; }
+
+.icon-btn{
+  background: transparent; border: 1px solid var(--border); color: var(--muted);
+  width: 34px; height: 34px; border-radius: 9px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.icon-btn.danger:hover{ color: var(--red); border-color: rgba(229,72,77,0.4); }
+
+/* ---------- App shell / sidebar ---------- */
+.app-shell{ display: flex; min-height: 100vh; }
+.sidebar{
+  width: 240px; flex-shrink: 0;
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 20px 14px;
+  position: sticky; top: 0; height: 100vh;
+}
+.sidebar-brand{
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-display); font-weight: 700; font-size: 1.05rem;
+  padding: 6px 8px 22px;
+}
+.sidebar-brand i{ color: var(--gold); font-size: 1.3rem; }
+.sidebar-nav{ display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.nav-item{
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 12px; border-radius: 10px;
+  background: transparent; border: none; color: var(--muted);
+  font-family: var(--font-body); font-size: 0.95rem; font-weight: 500;
+  cursor: pointer; text-align: right; position: relative;
+}
+[dir="rtl"] .nav-item, .nav-item{ text-align: left; }
+.nav-item i{ width: 18px; color: var(--muted); }
+.nav-item:hover{ background: rgba(255,255,255,0.04); color: var(--text); }
+.nav-item.active{ background: rgba(201,151,58,0.12); color: var(--gold); }
+.nav-item.active i{ color: var(--gold); }
+.nav-badge{
+  margin-inline-start: auto;
+  background: var(--red); color: #fff; font-size: 0.72rem; font-weight: 700;
+  padding: 1px 7px; border-radius: 20px;
+}
+.sidebar-footer{ border-top: 1px solid var(--border); padding-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+.admin-chip{ display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--muted); padding: 0 4px; }
+.admin-chip i{ color: var(--teal); }
+
+.main-area{ flex: 1; padding: 30px 34px; max-width: 1100px; }
+.view-header{ margin-bottom: 22px; }
+.view-header h2{ font-size: 1.5rem; margin-bottom: 4px; }
+
+.panel{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 22px;
+}
+.panel-head{ margin-bottom: 14px; }
+.panel-head h3{ font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+.panel-head h3 i{ color: var(--gold); }
+
+.loading{ color: var(--muted); padding: 20px; text-align: center; }
+.loading.err{ color: var(--red); }
+
+.empty-ok{
+  color: #7fd8a4; background: rgba(47,111,97,0.12); border: 1px solid rgba(47,111,97,0.3);
+  padding: 14px; border-radius: 10px; display: flex; align-items: center; gap: 8px;
+}
+
+@media (max-width: 860px){
+  .app-shell{ flex-direction: column; }
+  .sidebar{ width: 100%; height: auto; position: static; flex-direction: row; align-items: center; padding: 12px 16px; }
+  .sidebar-brand{ padding: 0; margin-inline-end: 14px; }
+  .sidebar-nav{ flex-direction: row; overflow-x: auto; flex: 1; }
+  .nav-item span{ display: none; }
+  .sidebar-footer{ border: none; flex-direction: row; }
+  .admin-chip span{ display: none; }
+  .main-area{ padding: 20px 16px; max-width: 100%; }
+}
