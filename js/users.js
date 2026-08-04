@@ -126,46 +126,18 @@ async function openUserDrawer(uid){
   body.querySelectorAll('.revoke-session').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       const row = e.target.closest('.session-row');
-      const ok = await showConfirm({
-        title: 'সেশন মুছবেন?',
-        message: 'এই সেশনটি মুছে ফেলবেন? এই ডিভাইস থেকে লগইন সেশনটি আর কার্যকর থাকবে না।',
-        confirmText: 'মুছুন',
-        danger: true,
-      });
-      if(!ok) return;
-      setConfirmBusy(true);
-      try{
-        await deleteSession(row.dataset.uid, row.dataset.sid);
-        showToast('সেশনটি মুছে ফেলা হয়েছে', 'success');
-        openUserDrawer(uid);
-      }catch(err){
-        showToast('সেশন মুছতে ব্যর্থ হয়েছে', 'error');
-      }finally{
-        setConfirmBusy(false);
-      }
+      if(!confirm('এই সেশনটি মুছে ফেলবেন?')) return;
+      await deleteSession(row.dataset.uid, row.dataset.sid);
+      openUserDrawer(uid);
     });
   });
 
   document.getElementById('deleteUserBtn').addEventListener('click', async () => {
-    const ok = await showConfirm({
-      title: 'ইউজার ডকুমেন্ট মুছবেন?',
-      message: `${user.name || user.email} — এই ইউজারের Firestore ডকুমেন্ট স্থায়ীভাবে মুছে যাবে (Auth অ্যাকাউন্ট থাকবে)। এই কাজটি ফিরিয়ে নেওয়া যাবে না।`,
-      confirmText: 'স্থায়ীভাবে মুছুন',
-      danger: true,
-    });
-    if(!ok) return;
-    setConfirmBusy(true);
-    try{
-      await deleteUserDoc(uid);
-      cachedUsers = cachedUsers.filter(u => u.id !== uid);
-      closeUserDrawer();
-      renderUsers();
-      showToast('ইউজার ডকুমেন্ট মুছে ফেলা হয়েছে', 'success');
-    }catch(err){
-      showToast('ইউজার মুছতে ব্যর্থ হয়েছে', 'error');
-    }finally{
-      setConfirmBusy(false);
-    }
+    if(!confirm(`${user.name || user.email} — এই ইউজারের Firestore ডকুমেন্ট স্থায়ীভাবে মুছে যাবে (Auth অ্যাকাউন্ট থাকবে)। নিশ্চিত?`)) return;
+    await deleteUserDoc(uid);
+    cachedUsers = cachedUsers.filter(u => u.id !== uid);
+    closeUserDrawer();
+    renderUsers();
   });
 }
 
