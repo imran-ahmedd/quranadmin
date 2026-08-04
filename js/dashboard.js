@@ -18,13 +18,15 @@ function onAdminReady(){
 
 function updateErrorBadge(count){
   errorsUnread = count;
-  const badge = document.getElementById('errorNavBadge');
-  if(count > 0){
-    badge.textContent = count > 99 ? '99+' : count;
-    badge.classList.remove('hidden');
-  }else{
-    badge.classList.add('hidden');
-  }
+  // দুইটা badge আছে — একটা ডেস্কটপ সাইডবারে, একটা মোবাইল বটম-নেভে
+  document.querySelectorAll('.error-badge').forEach(badge => {
+    if(count > 0){
+      badge.textContent = count > 99 ? '99+' : count;
+      badge.classList.remove('hidden');
+    }else{
+      badge.classList.add('hidden');
+    }
+  });
 }
 
 async function renderOverview(){
