@@ -1,5 +1,19 @@
 // ---------- User management page ----------
 let usersRenderedOnce = false;
+let userStatusFilter = 'all'; // all | active | restricted | blocked
+
+function userStatusInfo(status){
+  const map = {
+    active:     { label: 'সক্রিয়',   cls: 'status-active',     icon: 'circle-check' },
+    restricted: { label: 'সীমিত',    cls: 'status-restricted', icon: 'triangle-exclamation' },
+    blocked:    { label: 'ব্লক করা', cls: 'status-blocked',    icon: 'ban' },
+  };
+  return map[status] || map.active;
+}
+function statusBadge(status){
+  const s = userStatusInfo(status || 'active');
+  return `<span class="status-badge ${s.cls}"><i class="fa-solid fa-${s.icon}"></i> ${s.label}</span>`;
+}
 
 // সেফটি-নেট: কোনো কারণে confirm.js লোড না হলেও যেন ডিলিট বাটনগুলো
 // একদম অকেজো হয়ে না যায় — নেটিভ confirm()-এ ফলব্যাক করবে।
@@ -21,25 +35,29 @@ async function renderUsers(){
   const searchInput = document.getElementById('userSearch');
 
   if(!cachedUsers){
-    tbody.innerHTML = `<tr><td colspan="5" class="loading">লোড হচ্ছে...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="loading">লোড হচ্ছে...</td></tr>`;
     try{ cachedUsers = await fetchAllUsers(); }
-    catch(e){ tbody.innerHTML = `<tr><td colspan="5" class="loading err">লোড ব্যর্থ হয়েছে</td></tr>`; return; }
+    catch(e){ tbody.innerHTML = `<tr><td colspan="6" class="loading err">লোড ব্যর্থ হয়েছে</td></tr>`; return; }
   }
 
   const draw = () => {
     const q = (searchInput.value || '').trim().toLowerCase();
     const rows = cachedUsers
       .filter(u => !q || (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q))
+      .filter(u => userStatusFilter === 'all' || (u.status || 'active') === userStatusFilter)
       .sort((a, b) => (b.updatedAt?.toMillis?.() || 0) - (a.updatedAt?.toMillis?.() || 0));
 
+    document.querySelectorAll('.status-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.statusFilter === userStatusFilter));
+
     if(rows.length === 0){
-      tbody.innerHTML = `<tr><td colspan="5" class="loading">কোনো ইউজার পাওয়া যায়নি</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="loading">কোনো ইউজার পাওয়া যায়নি</td></tr>`;
       return;
     }
     tbody.innerHTML = rows.map(u => `
       <tr data-uid="${u.id}" class="user-row">
         <td>${escapeHtml(u.name || '—')}</td>
         <td>${escapeHtml(u.email || '—')}</td>
+        <td>${statusBadge(u.status)}</td>
         <td>${u.progress?.bestStreak ?? 0}</td>
         <td>${u.progress?.ayahsReadCount ?? 0}</td>
         <td>${formatTime(u.updatedAt)}</td>
@@ -52,6 +70,9 @@ async function renderUsers(){
   draw();
   if(!usersRenderedOnce){
     searchInput.addEventListener('input', draw);
+    document.querySelectorAll('.status-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => { userStatusFilter = btn.dataset.statusFilter; draw(); });
+    });
     usersRenderedOnce = true;
   }
 }
@@ -93,6 +114,51 @@ async function openUserDrawer(uid){
         <h3>${escapeHtml(user.name || 'নাম নেই')}</h3>
         <p class="muted small">${escapeHtml(user.email || '')}${user.position ? ' · ' + escapeHtml(user.position) : ''}</p>
         <p class="muted small drawer-dates"><i class="fa-solid fa-calendar-plus"></i> যোগ দিয়েছেন: ${formatTime(user.createdAt) || '—'} &nbsp;·&nbsp; <i class="fa-solid fa-rotate"></i> শেষ সিঙ্ক: ${formatTime(user.updatedAt) || '—'}</p>
+      </div>
+    </div>
+
+    <div class="mod-section">
+      <h4><i class="fa-solid fa-user-shield"></i> অ্যাকাউন্ট নিয়ন্ত্রণ</h4>
+
+      <div class="mod-status-row">
+        <button class="mod-status-btn status-active${(user.status||'active')==='active'?' active':''}" data-status="active"><i class="fa-solid fa-circle-check"></i> সক্রিয়</button>
+        <button class="mod-status-btn status-restricted${user.status==='restricted'?' active':''}" data-status="restricted"><i class="fa-solid fa-triangle-exclamation"></i> সীমিত</button>
+        <button class="mod-status-btn status-blocked${user.status==='blocked'?' active':''}" data-status="blocked"><i class="fa-solid fa-ban"></i> ব্লক</button>
+      </div>
+      <p class="muted small mod-status-hint">
+        <b>সীমিত:</b> লগইন করতে পারবে, কিন্তু নাম/পদবি/বায়ো পরিবর্তন করতে পারবে না।
+        &nbsp;<b>ব্লক:</b> পরের বার অ্যাপ খুললেই স্বয়ংক্রিয়ভাবে সাইন-আউট হয়ে যাবে।
+      </p>
+      <textarea class="mod-reason-input" id="modReasonInput" placeholder="কারণ লিখুন (ইউজার এটা দেখতে পারবে না, শুধু এডমিন নোট)...">${escapeHtml(user.statusReason || '')}</textarea>
+      <button class="btn small primary full" id="modStatusSaveBtn"><i class="fa-solid fa-floppy-disk"></i> স্ট্যাটাস সংরক্ষণ করুন</button>
+
+      <div class="mod-theme-row">
+        <div class="mod-theme-label">
+          <i class="fa-solid fa-palette"></i>
+          <div>
+            <div>কাস্টম থিম অ্যাক্সেস</div>
+            <p class="muted small">সাধারণত ৩০ দিনের স্ট্রিক লাগে — চালু করলে সাথে সাথে আনলক হয়ে যাবে</p>
+          </div>
+        </div>
+        <label class="mod-toggle">
+          <input type="checkbox" id="modThemeToggle"${user.customThemeGranted ? ' checked' : ''}>
+          <span class="mod-toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="mod-fields">
+        <div class="mod-field-row" data-field="name">
+          <div><span class="mod-field-label">নাম</span><p class="mod-field-value">${escapeHtml(user.name || '—')}</p></div>
+          ${user.name ? `<button class="btn small ghost mod-clear-btn" data-field="name"><i class="fa-solid fa-eraser"></i> মুছুন</button>` : ''}
+        </div>
+        <div class="mod-field-row" data-field="position">
+          <div><span class="mod-field-label">পদবি</span><p class="mod-field-value">${escapeHtml(user.position || '—')}</p></div>
+          ${user.position ? `<button class="btn small ghost mod-clear-btn" data-field="position"><i class="fa-solid fa-eraser"></i> মুছুন</button>` : ''}
+        </div>
+        <div class="mod-field-row" data-field="bio">
+          <div><span class="mod-field-label">বায়ো</span><p class="mod-field-value">${escapeHtml(user.bio || '—')}</p></div>
+          ${user.bio ? `<button class="btn small ghost mod-clear-btn" data-field="bio"><i class="fa-solid fa-eraser"></i> মুছুন</button>` : ''}
+        </div>
       </div>
     </div>
 
@@ -173,6 +239,85 @@ async function openUserDrawer(uid){
         openUserDrawer(uid);
       }catch(err){
         _toast('সেশন মুছতে ব্যর্থ হয়েছে', 'error');
+      }finally{
+        _busy(false);
+      }
+    });
+  });
+
+  // ---- মডারেশন: স্ট্যাটাস বাটন (ক্লিকে শুধু ভিজ্যুয়াল সিলেক্ট হবে, আসল সেভ হবে নিচের বাটনে) ----
+  let pendingStatus = user.status || 'active';
+  body.querySelectorAll('.mod-status-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      pendingStatus = btn.dataset.status;
+      body.querySelectorAll('.mod-status-btn').forEach(b => b.classList.toggle('active', b.dataset.status === pendingStatus));
+    });
+  });
+
+  document.getElementById('modStatusSaveBtn').addEventListener('click', async () => {
+    const reason = document.getElementById('modReasonInput').value.trim();
+    if(pendingStatus === 'blocked'){
+      const ok = await _confirm({
+        title: 'ইউজারকে ব্লক করবেন?',
+        message: `${user.name || user.email} — পরের বার অ্যাপ খুললেই স্বয়ংক্রিয়ভাবে সাইন-আউট হয়ে যাবে। নিশ্চিত?`,
+        confirmText: 'ব্লক করুন',
+        danger: true,
+      });
+      if(!ok) return;
+    }
+    _busy(true);
+    try{
+      await updateUserStatus(uid, pendingStatus, reason);
+      user.status = pendingStatus;
+      user.statusReason = reason;
+      const cu = cachedUsers.find(u => u.id === uid);
+      if(cu){ cu.status = pendingStatus; cu.statusReason = reason; }
+      _toast('স্ট্যাটাস আপডেট হয়েছে', 'success');
+      renderUsers();
+    }catch(err){
+      _toast('স্ট্যাটাস আপডেট ব্যর্থ হয়েছে', 'error');
+    }finally{
+      _busy(false);
+    }
+  });
+
+  // ---- কাস্টম থিম গ্রান্ট টগল ----
+  document.getElementById('modThemeToggle').addEventListener('change', async (e) => {
+    const granted = e.target.checked;
+    try{
+      await grantCustomTheme(uid, granted);
+      user.customThemeGranted = granted;
+      const cu = cachedUsers.find(u => u.id === uid);
+      if(cu) cu.customThemeGranted = granted;
+      _toast(granted ? 'কাস্টম থিম আনলক করা হয়েছে' : 'কাস্টম থিম অ্যাক্সেস বাতিল করা হয়েছে', 'success');
+    }catch(err){
+      e.target.checked = !granted;
+      _toast('আপডেট ব্যর্থ হয়েছে', 'error');
+    }
+  });
+
+  // ---- অনুপযুক্ত প্রোফাইল টেক্সট মুছে ফেলা (নাম/পদবি/বায়ো) ----
+  body.querySelectorAll('.mod-clear-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const field = btn.dataset.field;
+      const fieldLabel = { name: 'নাম', position: 'পদবি', bio: 'বায়ো' }[field] || field;
+      const ok = await _confirm({
+        title: `${fieldLabel} মুছবেন?`,
+        message: `এই ইউজারের ${fieldLabel} ফিল্ডটা খালি করে দেওয়া হবে। ইউজার চাইলে আবার লিখতে পারবে।`,
+        confirmText: 'মুছুন',
+        danger: true,
+      });
+      if(!ok) return;
+      _busy(true);
+      try{
+        await clearProfileField(uid, field);
+        user[field] = '';
+        const cu = cachedUsers.find(u => u.id === uid);
+        if(cu) cu[field] = '';
+        _toast(`${fieldLabel} মুছে ফেলা হয়েছে`, 'success');
+        openUserDrawer(uid);
+      }catch(err){
+        _toast('মুছতে ব্যর্থ হয়েছে', 'error');
       }finally{
         _busy(false);
       }
