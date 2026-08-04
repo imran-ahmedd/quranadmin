@@ -1,0 +1,63 @@
+#loginView{ position: relative; overflow: hidden; }
+#loginView::before{
+  content: '';
+  position: absolute; width: 480px; height: 480px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(215,163,77,0.16), transparent 65%);
+  top: -140px; right: -120px; pointer-events: none;
+}
+#loginView::after{
+  content: '';
+  position: absolute; width: 420px; height: 420px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,146,128,0.16), transparent 65%);
+  bottom: -140px; left: -120px; pointer-events: none;
+}
+
+.login-card{
+  width: 100%; max-width: 390px;
+  background: linear-gradient(180deg, var(--panel-2), transparent 50%), var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 34px 30px;
+  text-align: center;
+  box-shadow: var(--shadow-pop);
+  position: relative; z-index: 1;
+}
+.login-brand{ display: flex; align-items: center; gap: 13px; margin-bottom: 28px; text-align: right; }
+.login-brand i{
+  font-size: 1.5rem; color: var(--gold);
+  width: 52px; height: 52px; border-radius: 15px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--gold-dim); border: 1px solid var(--gold-line);
+  box-shadow: 0 0 0 6px rgba(215,163,77,0.06);
+}
+.login-brand h1{ font-size: 1.25rem; }
+.login-brand p{ color: var(--muted); font-size: 0.85rem; font-family: var(--font-mono); letter-spacing: .03em; margin-top: 2px; }
+
+#loginForm{ display: flex; flex-direction: column; gap: 15px; text-align: right; }
+#loginForm label{ font-size: 0.85rem; color: var(--muted); display: flex; flex-direction: column; gap: 7px; font-weight: 500; }
+#loginForm input{
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-size: 0.95rem;
+  font-family: var(--font-body);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+#loginForm input:focus{
+  outline: none;
+  border-color: var(--gold-line);
+  box-shadow: 0 0 0 3px var(--gold-dim);
+}
+.form-error{ color: var(--red); font-size: 0.85rem; min-height: 1.1em; }
+.login-hint{ margin-top: 18px; color: var(--muted); font-size: 0.78rem; line-height: 1.6; }
+
+.denied-icon{
+  font-size: 1.7rem; color: var(--red); margin: 0 auto 16px;
+  width: 60px; height: 60px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--red-dim); border: 1px solid var(--red-line);
+}
+#deniedView h2{ margin-bottom: 8px; }
+#deniedView p{ color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 22px; }

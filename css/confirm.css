@@ -1,0 +1,85 @@
+/* ---------- Custom confirm modal (replaces native browser confirm()) ---------- */
+.confirm-overlay{
+  position: fixed; inset: 0; z-index: 200;
+  background: rgba(4,6,10,0.7);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+.confirm-overlay.hidden{ display: none; }
+.confirm-overlay.show{ opacity: 1; }
+
+.confirm-box{
+  background: linear-gradient(180deg, var(--panel-2), transparent 45%), var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 30px 26px 24px;
+  width: 100%;
+  max-width: 390px;
+  text-align: center;
+  box-shadow: var(--shadow-pop);
+  transform: translateY(18px) scale(.94);
+  opacity: 0;
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1), opacity .2s ease;
+}
+.confirm-overlay.show .confirm-box{ transform: translateY(0) scale(1); opacity: 1; }
+
+.confirm-icon{
+  width: 56px; height: 56px; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 18px;
+  background: var(--gold-dim); color: var(--gold);
+  font-size: 1.35rem;
+  transform: scale(.6); opacity: 0;
+  transition: transform .32s cubic-bezier(.34,1.56,.64,1) .05s, opacity .25s ease .05s;
+}
+.confirm-overlay.show .confirm-icon{ transform: scale(1); opacity: 1; }
+.confirm-icon.danger{ background: var(--red-dim); color: var(--red); }
+
+.confirm-title{ font-size: 1.14rem; margin-bottom: 9px; }
+.confirm-message{ color: var(--muted); font-size: 0.92rem; line-height: 1.6; margin-bottom: 24px; white-space: pre-line; }
+
+.confirm-actions{ display: flex; gap: 10px; }
+.confirm-actions .btn{ flex: 1; justify-content: center; }
+.confirm-actions .btn:disabled i.fa-spinner{ animation: confirmSpin .7s linear infinite; }
+
+@keyframes confirmSpin{ to{ transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce){
+  .confirm-overlay, .confirm-box, .confirm-icon{ transition: opacity .12s ease !important; transform: none !important; }
+}
+
+/* ---------- Toast notifications ---------- */
+.toast-wrap{
+  position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%);
+  z-index: 220;
+  display: flex; flex-direction: column; gap: 8px; align-items: center;
+  pointer-events: none;
+}
+.toast{
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 11px 19px;
+  border-radius: 30px;
+  font-size: 0.86rem;
+  font-weight: 500;
+  display: flex; align-items: center; gap: 9px;
+  box-shadow: var(--shadow-pop);
+  opacity: 0;
+  transform: translateY(12px) scale(.95);
+  transition: opacity .22s ease, transform .22s cubic-bezier(.34,1.56,.64,1);
+  max-width: min(90vw, 360px);
+}
+.toast.show{ opacity: 1; transform: translateY(0) scale(1); }
+.toast-success i{ color: var(--mint); }
+.toast-error i{ color: var(--red); }
+.toast-info i{ color: var(--gold); }
+
+body.modal-open{ overflow: hidden; }
+
+@media (max-width: 860px){
+  .toast-wrap{ bottom: calc(72px + env(safe-area-inset-bottom)); }
+}
