@@ -1,6 +1,21 @@
 // ---------- User management page ----------
 let usersRenderedOnce = false;
 
+// সেফটি-নেট: কোনো কারণে confirm.js লোড না হলেও যেন ডিলিট বাটনগুলো
+// একদম অকেজো হয়ে না যায় — নেটিভ confirm()-এ ফলব্যাক করবে।
+function _confirm(opts){
+  if(typeof showConfirm === 'function') return showConfirm(opts);
+  const msg = typeof opts === 'string' ? opts : opts.message;
+  return Promise.resolve(window.confirm(msg));
+}
+function _toast(msg, type){ if(typeof showToast === 'function') showToast(msg, type); }
+function _busy(state){ if(typeof setConfirmBusy === 'function') setConfirmBusy(state); }
+
+function userInitial(name, email){
+  const src = (name || email || '?').trim();
+  return src.charAt(0).toUpperCase();
+}
+
 async function renderUsers(){
   const tbody = document.getElementById('usersTbody');
   const searchInput = document.getElementById('userSearch');
@@ -72,9 +87,14 @@ async function openUserDrawer(uid){
   ].filter(f => f.on);
 
   body.innerHTML = `
-    <h3>${escapeHtml(user.name || 'নাম নেই')}</h3>
-    <p class="muted">${escapeHtml(user.email || '')} · ${escapeHtml(user.position || '')}</p>
-    <p class="muted small">যোগ দিয়েছেন: ${formatTime(user.createdAt) || '—'} · শেষ সিঙ্ক: ${formatTime(user.updatedAt) || '—'}</p>
+    <div class="drawer-header">
+      <div class="drawer-avatar">${escapeHtml(userInitial(user.name, user.email))}</div>
+      <div class="drawer-header-text">
+        <h3>${escapeHtml(user.name || 'নাম নেই')}</h3>
+        <p class="muted small">${escapeHtml(user.email || '')}${user.position ? ' · ' + escapeHtml(user.position) : ''}</p>
+        <p class="muted small drawer-dates"><i class="fa-solid fa-calendar-plus"></i> যোগ দিয়েছেন: ${formatTime(user.createdAt) || '—'} &nbsp;·&nbsp; <i class="fa-solid fa-rotate"></i> শেষ সিঙ্ক: ${formatTime(user.updatedAt) || '—'}</p>
+      </div>
+    </div>
 
     <div class="drawer-stats">
       <div><span>${p.bestStreak ?? 0}</span>সেরা স্ট্রিক</div>
@@ -95,8 +115,20 @@ async function openUserDrawer(uid){
       ${featureFlags.length ? featureFlags.map(f => `<span class="feature-tag"><i class="fa-solid fa-${f.icon}"></i> ${f.label}</span>`).join('')
         : '<p class="muted small">কোনো এক্সট্রা ফিচার এখনো ব্যবহার করেনি</p>'}
     </div>
-    ${(p.themesTried||[]).length ? `<p class="muted small">থিম চেষ্টা করেছে: ${p.themesTried.map(escapeHtml).join(', ')}</p>` : ''}
-    ${(p.languagesUsed||[]).length ? `<p class="muted small">ভাষা ব্যবহার করেছে: ${p.languagesUsed.map(escapeHtml).join(', ')}</p>` : ''}
+
+    ${(p.themesTried||[]).length || (p.languagesUsed||[]).length ? `
+    <div class="meta-chip-groups">
+      ${(p.themesTried||[]).length ? `
+      <div class="meta-chip-row">
+        <span class="meta-chip-label"><i class="fa-solid fa-palette"></i> থিম</span>
+        <div class="meta-chip-list">${p.themesTried.map(t => `<span class="meta-chip">${escapeHtml(t)}</span>`).join('')}</div>
+      </div>` : ''}
+      ${(p.languagesUsed||[]).length ? `
+      <div class="meta-chip-row">
+        <span class="meta-chip-label"><i class="fa-solid fa-language"></i> ভাষা</span>
+        <div class="meta-chip-list">${p.languagesUsed.map(l => `<span class="meta-chip">${escapeHtml(l)}</span>`).join('')}</div>
+      </div>` : ''}
+    </div>` : ''}
 
     <h4>দৈনিক পড়ার লগ (সাম্প্রতিক ৩০ দিন)</h4>
     <div class="activity-log">
@@ -112,12 +144,13 @@ async function openUserDrawer(uid){
     <div class="session-list">
       ${sessions.length ? sessions.map(s => `
         <div class="session-row" data-uid="${uid}" data-sid="${s.id}">
-          <i class="fa-solid fa-${s.deviceType === 'mobile' ? 'mobile-screen' : 'desktop'}"></i>
+          <div class="session-icon"><i class="fa-solid fa-${s.deviceType === 'mobile' ? 'mobile-screen' : 'desktop'}"></i></div>
           <div class="session-meta">
-            <div>${escapeHtml(s.browser || '')} · ${escapeHtml(s.os || '')}</div>
-            <div class="muted small">${escapeHtml(s.city || '')} ${escapeHtml(s.country || '')} · ${formatTime(s.createdAt)}</div>
+            <div class="session-device">${escapeHtml(s.browser || 'অজানা ব্রাউজার')} · ${escapeHtml(s.os || '')}</div>
+            <div class="muted small session-location"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(s.city || '')} ${escapeHtml(s.country || '')}</div>
+            <div class="muted small session-time"><i class="fa-solid fa-clock"></i> ${formatTime(s.createdAt)}</div>
           </div>
-          <button class="icon-btn danger revoke-session" title="সেশন মুছুন"><i class="fa-solid fa-xmark"></i></button>
+          <button class="revoke-session" title="সেশন মুছুন" aria-label="সেশন মুছুন"><i class="fa-solid fa-xmark"></i></button>
         </div>`).join('') : '<p class="muted">কোনো সেশন রেকর্ড নেই</p>'}
     </div>
     <button class="btn danger full" id="deleteUserBtn"><i class="fa-solid fa-trash"></i> এই ইউজার ডকুমেন্ট মুছে ফেলুন</button>
@@ -126,18 +159,46 @@ async function openUserDrawer(uid){
   body.querySelectorAll('.revoke-session').forEach(btn => {
     btn.addEventListener('click', async (e) => {
       const row = e.target.closest('.session-row');
-      if(!confirm('এই সেশনটি মুছে ফেলবেন?')) return;
-      await deleteSession(row.dataset.uid, row.dataset.sid);
-      openUserDrawer(uid);
+      const ok = await _confirm({
+        title: 'সেশন মুছবেন?',
+        message: 'এই সেশনটি মুছে ফেলবেন? এই ডিভাইস থেকে লগইন সেশনটি আর কার্যকর থাকবে না।',
+        confirmText: 'মুছুন',
+        danger: true,
+      });
+      if(!ok) return;
+      _busy(true);
+      try{
+        await deleteSession(row.dataset.uid, row.dataset.sid);
+        _toast('সেশনটি মুছে ফেলা হয়েছে', 'success');
+        openUserDrawer(uid);
+      }catch(err){
+        _toast('সেশন মুছতে ব্যর্থ হয়েছে', 'error');
+      }finally{
+        _busy(false);
+      }
     });
   });
 
   document.getElementById('deleteUserBtn').addEventListener('click', async () => {
-    if(!confirm(`${user.name || user.email} — এই ইউজারের Firestore ডকুমেন্ট স্থায়ীভাবে মুছে যাবে (Auth অ্যাকাউন্ট থাকবে)। নিশ্চিত?`)) return;
-    await deleteUserDoc(uid);
-    cachedUsers = cachedUsers.filter(u => u.id !== uid);
-    closeUserDrawer();
-    renderUsers();
+    const ok = await _confirm({
+      title: 'ইউজার ডকুমেন্ট মুছবেন?',
+      message: `${user.name || user.email} — এই ইউজারের Firestore ডকুমেন্ট স্থায়ীভাবে মুছে যাবে (Auth অ্যাকাউন্ট থাকবে)। এই কাজটি ফিরিয়ে নেওয়া যাবে না।`,
+      confirmText: 'স্থায়ীভাবে মুছুন',
+      danger: true,
+    });
+    if(!ok) return;
+    _busy(true);
+    try{
+      await deleteUserDoc(uid);
+      cachedUsers = cachedUsers.filter(u => u.id !== uid);
+      closeUserDrawer();
+      renderUsers();
+      _toast('ইউজার ডকুমেন্ট মুছে ফেলা হয়েছে', 'success');
+    }catch(err){
+      _toast('ইউজার মুছতে ব্যর্থ হয়েছে', 'error');
+    }finally{
+      _busy(false);
+    }
   });
 }
 
