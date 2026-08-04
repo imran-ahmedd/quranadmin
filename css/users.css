@@ -128,3 +128,78 @@ tbody td{ padding: 12px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
 .activity-bar-wrap{ flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 4px; overflow: hidden; }
 .activity-bar{ display: block; height: 100%; background: linear-gradient(90deg, var(--teal), var(--gold)); border-radius: 4px; }
 .activity-min{ width: 58px; text-align: left; color: var(--muted); flex-shrink: 0; }
+
+/* ---------- Users toolbar: search + status filter chips ---------- */
+.users-toolbar{ display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-bottom: 16px; }
+.users-toolbar .search-box{ flex: 1; min-width: 200px; margin-bottom: 0; }
+.user-status-filters{ display: flex; gap: 6px; flex-shrink: 0; }
+.status-filter-btn{
+  background: transparent; border: 1px solid var(--border); color: var(--muted);
+  padding: 8px 13px; border-radius: 8px; font-family: var(--font-body); font-size: 0.8rem;
+  cursor: pointer; transition: all .12s ease;
+}
+.status-filter-btn.active{ background: rgba(201,151,58,0.14); border-color: rgba(201,151,58,0.4); color: var(--gold); }
+
+/* ---------- Status badge (table + drawer) ---------- */
+.status-badge{
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.74rem; padding: 4px 10px; border-radius: 20px; font-weight: 600;
+  white-space: nowrap;
+}
+.status-badge.status-active{ background: rgba(47,111,97,0.16); color: #8fd6c4; border: 1px solid rgba(47,111,97,0.35); }
+.status-badge.status-restricted{ background: rgba(201,151,58,0.14); color: var(--gold); border: 1px solid rgba(201,151,58,0.4); }
+.status-badge.status-blocked{ background: var(--red-glow); color: #ff8a8e; border: 1px solid rgba(229,72,77,0.35); }
+
+/* ---------- Moderation section in user drawer ---------- */
+.mod-section{
+  margin: 18px 0 22px; padding: 14px; background: var(--panel);
+  border: 1px solid var(--border); border-radius: 12px;
+}
+.mod-section h4{ margin: 0 0 12px; }
+.mod-status-row{ display: flex; gap: 6px; margin-bottom: 8px; }
+.mod-status-btn{
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: transparent; border: 1px solid var(--border); color: var(--muted);
+  padding: 9px 6px; border-radius: 9px; font-family: var(--font-body); font-size: 0.76rem;
+  cursor: pointer; transition: all .12s ease;
+}
+.mod-status-btn.active.status-active{ background: rgba(47,111,97,0.16); border-color: rgba(47,111,97,0.45); color: #8fd6c4; }
+.mod-status-btn.active.status-restricted{ background: rgba(201,151,58,0.14); border-color: rgba(201,151,58,0.45); color: var(--gold); }
+.mod-status-btn.active.status-blocked{ background: var(--red-glow); border-color: rgba(229,72,77,0.45); color: #ff8a8e; }
+.mod-status-hint{ margin: 4px 0 12px; line-height: 1.5; }
+.mod-reason-input{
+  width: 100%; min-height: 56px; resize: vertical;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); font-family: var(--font-body); font-size: 0.82rem;
+  padding: 9px 11px; margin-bottom: 10px;
+}
+.mod-section .full{ width: 100%; justify-content: center; margin-bottom: 4px; }
+
+.mod-theme-row{
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin: 16px 0 4px; padding-top: 14px; border-top: 1px solid var(--border);
+}
+.mod-theme-label{ display: flex; align-items: flex-start; gap: 10px; font-size: 0.86rem; }
+.mod-theme-label i{ color: var(--gold); margin-top: 2px; }
+.mod-theme-label p{ margin-top: 2px; }
+
+/* Toggle switch */
+.mod-toggle{ position: relative; display: inline-block; width: 42px; height: 24px; flex-shrink: 0; }
+.mod-toggle input{ opacity: 0; width: 0; height: 0; }
+.mod-toggle-slider{
+  position: absolute; inset: 0; cursor: pointer;
+  background: rgba(255,255,255,0.12); border-radius: 24px; transition: background .15s ease;
+}
+.mod-toggle-slider::before{
+  content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px;
+  background: #fff; border-radius: 50%; transition: transform .15s ease;
+}
+.mod-toggle input:checked + .mod-toggle-slider{ background: var(--teal); }
+.mod-toggle input:checked + .mod-toggle-slider::before{ transform: translateX(18px); }
+
+/* Profile-text moderation rows (name / position / bio) */
+.mod-fields{ display: flex; flex-direction: column; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+.mod-field-row{ display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.mod-field-label{ font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+.mod-field-value{ font-size: 0.86rem; color: var(--text); margin-top: 2px; word-break: break-word; white-space: pre-wrap; }
+.mod-clear-btn{ flex-shrink: 0; white-space: nowrap; }
