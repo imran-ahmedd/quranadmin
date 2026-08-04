@@ -79,6 +79,38 @@ async function deleteUserDoc(uid){
   await fbDb.collection('users').doc(uid).delete();
 }
 
+// ---------- Moderation: account status + custom theme grant ----------
+// status field on users/{uid} (missing/'active' = normal):
+//   active     -> স্বাভাবিক, কোনো বাধা নেই
+//   restricted -> লগইন করতে পারবে, কিন্তু নাম/পদবি/বায়ো (প্রোফাইল টেক্সট)
+//                 এডিট করতে পারবে না, যতক্ষণ না আবার সক্রিয় করা হয়
+//   blocked    -> পরের বার অ্যাপ খুললেই স্বয়ংক্রিয়ভাবে সাইন-আউট হয়ে যাবে
+// মূল অ্যাপের js/auth.js এই ফিল্ডটা পড়ে enforcement করে — এটা শুধু
+// ফিল্ড লেখে, বাকিটা মূল অ্যাপের দায়িত্ব।
+async function updateUserStatus(uid, status, reason){
+  await fbDb.collection('users').doc(uid).set({
+    status,
+    statusReason: reason || '',
+    statusUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, { merge: true });
+}
+
+// কাস্টম থিম বিল্ডার সাধারণত ৩০ দিনের স্ট্রিক ছাড়া আনলক হয় না (দেখুন
+// AlQuran-main/js/theme-builder.js)। এডমিন এই ফ্ল্যাগ সেট করলে সেই শর্ত
+// বাইপাস হয়ে যাবে — যে কাউকে সরাসরি অ্যাক্সেস দেওয়া যাবে।
+async function grantCustomTheme(uid, granted){
+  await fbDb.collection('users').doc(uid).set({ customThemeGranted: !!granted }, { merge: true });
+}
+
+// প্রোফাইলের একটা ফ্রি-টেক্সট ফিল্ড (নাম/পদবি/বায়ো) মুছে ফেলার জন্য —
+// অনুপযুক্ত লেখা পেলে বাকি ডকুমেন্টে হাত না দিয়ে শুধু ওই ফিল্ডটাই ক্লিয়ার
+// করা যায়।
+async function clearProfileField(uid, field){
+  const ALLOWED = ['name', 'position', 'bio'];
+  if(!ALLOWED.includes(field)) throw new Error('field not allowed: ' + field);
+  await fbDb.collection('users').doc(uid).update({ [field]: '' });
+}
+
 // ---------- Error / incident log ----------
 // main app-এর js/error-logger.js এই কালেকশনে লেখে। এখানে শুধু পড়া/
 // resolve করা/মুছে ফেলা হয়।
