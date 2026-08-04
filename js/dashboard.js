@@ -1,6 +1,7 @@
 // ---------- Overview page ----------
 let cachedUsers = null;
 let cachedErrors = [];
+let cachedStatuses = [];
 let activityChart = null;
 let errorsUnread = 0;
 
@@ -13,6 +14,13 @@ function onAdminReady(){
     if(location.hash.slice(1) === 'overview') renderOverview();
     if(location.hash.slice(1) === 'errors' && typeof renderErrors === 'function') renderErrors();
   });
+  listenStatuses((statuses, err) => {
+    if(err){ return; }
+    cachedStatuses = statuses;
+    const liveCount = statuses.filter(s => !(typeof s.expiresAt === 'number' && s.expiresAt < Date.now())).length;
+    updateStoryBadge(liveCount);
+    if(location.hash.slice(1) === 'statuses' && typeof renderStatuses === 'function') renderStatuses();
+  });
   renderView();
 }
 
@@ -20,6 +28,17 @@ function updateErrorBadge(count){
   errorsUnread = count;
   // দুইটা badge আছে — একটা ডেস্কটপ সাইডবারে, একটা মোবাইল বটম-নেভে
   document.querySelectorAll('.error-badge').forEach(badge => {
+    if(count > 0){
+      badge.textContent = count > 99 ? '99+' : count;
+      badge.classList.remove('hidden');
+    }else{
+      badge.classList.add('hidden');
+    }
+  });
+}
+
+function updateStoryBadge(count){
+  document.querySelectorAll('.story-badge').forEach(badge => {
     if(count > 0){
       badge.textContent = count > 99 ? '99+' : count;
       badge.classList.remove('hidden');
