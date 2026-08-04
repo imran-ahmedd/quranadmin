@@ -114,11 +114,19 @@
         <p class="muted">সব ইউজার, তাদের অগ্রগতি এবং লগইন সেশন দেখুন ও পরিচালনা করুন</p>
       </header>
       <div class="panel">
-        <input type="text" id="userSearch" class="search-box" placeholder="নাম বা ইমেইল দিয়ে খুঁজুন...">
+        <div class="users-toolbar">
+          <input type="text" id="userSearch" class="search-box" placeholder="নাম বা ইমেইল দিয়ে খুঁজুন...">
+          <div class="user-status-filters">
+            <button class="status-filter-btn active" data-status-filter="all">সব</button>
+            <button class="status-filter-btn" data-status-filter="active">সক্রিয়</button>
+            <button class="status-filter-btn" data-status-filter="restricted">সীমিত</button>
+            <button class="status-filter-btn" data-status-filter="blocked">ব্লক করা</button>
+          </div>
+        </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>নাম</th><th>ইমেইল</th><th>স্ট্রিক</th><th>আয়াত পঠিত</th><th>শেষ সিঙ্ক</th></tr></thead>
-            <tbody id="usersTbody"><tr><td colspan="5" class="loading">লোড হচ্ছে...</td></tr></tbody>
+            <thead><tr><th>নাম</th><th>ইমেইল</th><th>স্ট্যাটাস</th><th>স্ট্রিক</th><th>আয়াত পঠিত</th><th>শেষ সিঙ্ক</th></tr></thead>
+            <tbody id="usersTbody"><tr><td colspan="6" class="loading">লোড হচ্ছে...</td></tr></tbody>
           </table>
         </div>
       </div>
