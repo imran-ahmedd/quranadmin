@@ -1,0 +1,45 @@
+.errors-toolbar{ display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+.error-filters{ display: flex; gap: 6px; }
+.error-filter-btn{
+  background: transparent; border: 1px solid var(--border); color: var(--muted);
+  padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.82rem; font-family: var(--font-body); font-weight: 500;
+  transition: all .12s ease;
+}
+.error-filter-btn:hover{ border-color: var(--border-strong); color: var(--text); }
+.error-filter-btn.active{ background: var(--gold-dim); border-color: var(--gold-line); color: var(--gold-2); }
+
+.errors-list{ display: flex; flex-direction: column; gap: 10px; }
+.error-card{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 15px 17px;
+  border-inline-start: 3px solid var(--red);
+  transition: border-color .15s ease;
+}
+.error-card:hover{ border-color: var(--border-strong); border-inline-start-color: var(--red); }
+.error-card.resolved{ border-inline-start-color: var(--teal); }
+.error-card.resolved .error-msg{ color: var(--text-dim); }
+.error-top{ display: flex; align-items: center; gap: 10px; margin-bottom: 7px; flex-wrap: wrap; }
+.sev-badge{
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: .01em;
+  padding: 4px 11px; border-radius: 20px;
+  background: var(--red-dim); color: #ff9296; border: 1px solid var(--red-line);
+}
+.error-card.sev-warning .sev-badge{ background: var(--gold-dim); color: var(--gold-2); border-color: var(--gold-line); }
+.error-card.sev-fatal .sev-badge{ background: rgba(239,74,79,0.22); color: #ffb3b6; border-color: rgba(239,74,79,0.55); }
+.error-card.sev-fatal{ border-inline-start-width: 4px; }
+/* সমাধান হয়ে গেলে severity নির্বিশেষে সবসময় শান্ত টিল রঙে দেখাবে —
+   তাই এই রুলটা সবার শেষে রাখা, যাতে severity-রঙকে override করে */
+.error-card.resolved .sev-badge{ background: var(--teal-dim); color: var(--mint); border-color: var(--teal-line); }
+.error-page{ color: var(--muted); font-size: 0.74rem; font-family: var(--font-mono); background: rgba(255,255,255,0.05); padding: 2px 9px; border-radius: 20px; }
+.error-time{ margin-inline-start: auto; color: var(--muted); font-size: 0.76rem; font-family: var(--font-mono); }
+.error-msg{ font-weight: 600; margin-bottom: 7px; }
+.error-stack{
+  background: var(--bg); border-radius: 9px; padding: 11px; font-size: 0.75rem;
+  color: var(--muted); overflow-x: auto; white-space: pre-wrap; max-height: 140px; overflow-y: auto;
+  font-family: var(--font-mono); border: 1px solid var(--border-hair);
+}
+.error-meta{ margin-top: 7px; font-family: var(--font-mono); font-size: 0.74rem !important; }
+.error-actions{ display: flex; gap: 8px; margin-top: 11px; }
