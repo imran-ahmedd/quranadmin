@@ -44,9 +44,64 @@
 
 <!-- ---------- Access denied ---------- -->
 <div id="deniedView" class="screen hidden">
-  <div class="login-card">
-    <i class="fa-solid fa-lock denied-icon"></i>
-    <h2>প্রবেশাধিকার নেই</h2>
+  <div class="login-card denied-card">
+
+    <div class="denied-mascot">
+      <div class="mascot-ring"></div>
+      <svg viewBox="0 0 200 200" class="mascot-svg" aria-hidden="true">
+        <defs>
+          <radialGradient id="headGrad" cx="35%" cy="30%" r="80%">
+            <stop offset="0%" stop-color="#1a2130"/>
+            <stop offset="100%" stop-color="#10141e"/>
+          </radialGradient>
+        </defs>
+
+        <g class="mascot-head">
+          <!-- antenna -->
+          <line x1="100" y1="22" x2="100" y2="42" stroke="var(--red)" stroke-width="4" stroke-linecap="round"/>
+          <circle class="antenna-dot" cx="100" cy="17" r="7" fill="var(--red)"/>
+
+          <!-- ears -->
+          <rect x="26" y="80" width="14" height="34" rx="6" fill="#10141e" stroke="var(--red-line)" stroke-width="2"/>
+          <rect x="160" y="80" width="14" height="34" rx="6" fill="#10141e" stroke="var(--red-line)" stroke-width="2"/>
+
+          <!-- head -->
+          <rect x="40" y="42" width="120" height="108" rx="32" fill="url(#headGrad)" stroke="var(--red-line)" stroke-width="2"/>
+
+          <!-- eyebrows (angry) -->
+          <path d="M62 80 L92 90" stroke="var(--red)" stroke-width="5" stroke-linecap="round"/>
+          <path d="M138 80 L108 90" stroke="var(--red)" stroke-width="5" stroke-linecap="round"/>
+
+          <!-- eyes -->
+          <g class="eye eye-l">
+            <circle cx="76" cy="102" r="15" fill="#060810"/>
+            <circle cx="76" cy="99" r="6" fill="#ff8b8f"/>
+            <rect class="eyelid" x="59" y="86" width="34" height="17" fill="url(#headGrad)"/>
+          </g>
+          <g class="eye eye-r">
+            <circle cx="124" cy="102" r="15" fill="#060810"/>
+            <circle cx="124" cy="99" r="6" fill="#ff8b8f"/>
+            <rect class="eyelid" x="107" y="86" width="34" height="17" fill="url(#headGrad)"/>
+          </g>
+
+          <!-- frowning mouth -->
+          <path class="mouth" d="M82 130 Q100 118 118 130" stroke="var(--red)" stroke-width="5" fill="none" stroke-linecap="round"/>
+        </g>
+
+        <!-- floating no-entry badge -->
+        <g class="no-badge">
+          <circle cx="168" cy="150" r="16" fill="var(--red-dim)" stroke="var(--red)" stroke-width="3"/>
+          <line x1="159" y1="141" x2="177" y2="159" stroke="var(--red)" stroke-width="3" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
+
+    <h2 class="denied-title">
+      <span class="letters">
+        <span style="--i:0">A</span><span style="--i:1">C</span><span style="--i:2">C</span><span style="--i:3">E</span><span style="--i:4">S</span><span style="--i:5">S</span><span class="gap"></span><span style="--i:6">D</span><span style="--i:7">E</span><span style="--i:8">N</span><span style="--i:9">I</span><span style="--i:10">E</span><span style="--i:11">D</span>
+      </span>
+    </h2>
+    <p class="denied-sub">You are not permitted to enter this control room.</p>
     <p>এই অ্যাকাউন্ট এডমিন তালিকায় নেই। Firestore-এর <code>admins/&lt;uid&gt;</code> ডকুমেন্ট যোগ করুন।</p>
     <button id="backToLoginBtn" class="btn full">লগ আউট</button>
   </div>
