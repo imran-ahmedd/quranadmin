@@ -11,18 +11,44 @@
 }
 .search-box:focus{ outline: none; border-color: var(--gold-line); box-shadow: 0 0 0 3px var(--gold-dim); }
 
-.table-wrap{ overflow-x: auto; border-radius: var(--radius-sm); }
+.table-wrap{ overflow-x: auto; border-radius: var(--radius-sm); position: relative; }
+/* মোবাইলে কলাম বেশি থাকলে স্ক্রল করা লাগে — ডানপাশে হালকা ফেড দিয়ে বোঝানো
+   হচ্ছে যে আরও ডেটা আছে, আর প্রথম কলাম (নাম) সবসময় দৃশ্যমান থাকবে */
+.table-wrap::after{
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0; width: 26px;
+  background: linear-gradient(90deg, transparent, var(--panel));
+  pointer-events: none;
+}
 table{ width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 thead th{
-  text-align: right; color: var(--muted); font-weight: 600; padding: 10px 12px;
+  text-align: left; color: var(--muted); font-weight: 600; padding: 10px 12px;
   border-bottom: 1px solid var(--border); font-size: 0.72rem;
   font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .06em;
-  position: sticky; top: 0; background: var(--panel); z-index: 1;
+  position: sticky; top: 0; background: var(--panel); z-index: 2;
+  white-space: nowrap;
 }
-tbody td{ padding: 13px 12px; border-bottom: 1px solid var(--border-hair); }
+tbody td{ padding: 13px 12px; border-bottom: 1px solid var(--border-hair); text-align: left; white-space: nowrap; }
 .user-row{ cursor: pointer; transition: background .12s ease; }
 .user-row:hover{ background: rgba(255,255,255,0.035); }
-.user-row td:last-child{ font-family: var(--font-mono); font-size: 0.82rem; color: var(--muted); }
+.user-row td:nth-child(1){ font-weight: 600; }
+.user-row td:nth-child(2){ color: var(--text-dim); }
+
+/* প্রথম কলাম (নাম) সবসময় বামে আটকে থাকবে, স্ক্রল করলেও হারিয়ে যাবে না */
+thead th:first-child, tbody td:first-child{
+  position: sticky; left: 0; z-index: 1; background: var(--panel);
+}
+thead th:first-child{ z-index: 3; }
+
+/* কলাম-ভিত্তিক অ্যালাইনমেন্ট: টেক্সট বামে, স্ট্যাটাস মাঝে, সংখ্যা/সময় ডানে
+   — হেডার আর ডেটা সবসময় একই কলামে একই দিকে বসবে */
+thead th:nth-child(3), tbody td:nth-child(3){ text-align: center; }
+thead th:nth-child(4), thead th:nth-child(5), thead th:nth-child(6),
+tbody td:nth-child(4), tbody td:nth-child(5), tbody td:nth-child(6){ text-align: right; }
+.user-row td:nth-child(4), .user-row td:nth-child(5), .user-row td:nth-child(6){
+  font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted);
+}
+.user-row td:nth-child(6){ font-size: 0.78rem; }
 
 .drawer{
   position: fixed; inset: 0; background: rgba(4,6,10,0.6);
@@ -217,6 +243,9 @@ tbody td{ padding: 13px 12px; border-bottom: 1px solid var(--border-hair); }
 /* Profile-text moderation rows (name / position / bio) */
 .mod-fields{ display: flex; flex-direction: column; gap: 9px; margin-top: 17px; padding-top: 15px; border-top: 1px solid var(--border-hair); }
 .mod-field-row{ display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+/* লেবেল+ভ্যালুর wrapper flex:1 + min-width:0 — যাতে লম্বা বায়ো/টেক্সট
+   বাটনকে ঠেলে না দিয়ে নিজের জায়গার মধ্যেই wrap করে, ছোট ভ্যালুতেও সারি টাইট থাকে */
+.mod-field-row > div:first-child{ flex: 1; min-width: 0; }
 .mod-field-label{ font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-family: var(--font-mono); }
 .mod-field-value{ font-size: 0.86rem; color: var(--text); margin-top: 3px; word-break: break-word; white-space: pre-wrap; }
 .mod-clear-btn{ flex-shrink: 0; white-space: nowrap; }
