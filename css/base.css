@@ -186,10 +186,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visib
   padding: 11px 13px; border-radius: 11px;
   background: transparent; border: none; color: var(--muted);
   font-family: var(--font-body); font-size: 0.95rem; font-weight: 500;
-  cursor: pointer; text-align: right; position: relative;
+  cursor: pointer; text-align: left; position: relative;
   transition: background .15s ease, color .15s ease;
 }
-[dir="rtl"] .nav-item, .nav-item{ text-align: left; }
 .nav-item i{ width: 18px; color: var(--muted-2); transition: color .15s ease; }
 .nav-item:hover{ background: rgba(255,255,255,0.045); color: var(--text); }
 .nav-item.active{ background: linear-gradient(90deg, var(--gold-dim), transparent); color: var(--gold-2); }
