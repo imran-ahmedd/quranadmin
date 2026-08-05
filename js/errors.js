@@ -77,9 +77,9 @@ function renderErrors(){
 }
 
 function severityLabel(sev){
-  if(sev === 'warning') return '⚠️ সতর্কতা';
-  if(sev === 'fatal') return '🔴 মারাত্মক';
-  return '🔴 এরর';
+  if(sev === 'warning') return '<i class="fa-solid fa-triangle-exclamation"></i> সতর্কতা';
+  if(sev === 'fatal') return '<i class="fa-solid fa-circle-exclamation"></i> মারাত্মক';
+  return '<i class="fa-solid fa-circle-exclamation"></i> এরর';
 }
 
 document.querySelectorAll('.error-filter-btn').forEach(b => {
