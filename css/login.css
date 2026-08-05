@@ -53,11 +53,116 @@
 .form-error{ color: var(--red); font-size: 0.85rem; min-height: 1.1em; }
 .login-hint{ margin-top: 18px; color: var(--muted); font-size: 0.78rem; line-height: 1.6; }
 
-.denied-icon{
-  font-size: 1.7rem; color: var(--red); margin: 0 auto 16px;
-  width: 60px; height: 60px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--red-dim); border: 1px solid var(--red-line);
-}
 #deniedView h2{ margin-bottom: 8px; }
 #deniedView p{ color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 22px; }
+
+/* ============================================================
+   Denied view — cartoon guard mascot + animated warning
+   ============================================================ */
+.denied-card{ overflow: visible; }
+
+.denied-mascot{
+  position: relative;
+  width: 148px; height: 148px;
+  margin: -6px auto 14px;
+}
+.mascot-ring{
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: var(--red-dim);
+  border: 1px solid var(--red-line);
+  animation: ringPulse 2.4s ease-in-out infinite;
+}
+.mascot-svg{
+  position: relative; width: 100%; height: 100%; z-index: 1;
+  filter: drop-shadow(0 12px 22px rgba(239,74,79,0.25));
+}
+
+.mascot-head{
+  transform-box: fill-box;
+  transform-origin: 50% 55%;
+  animation: headShake 3.4s ease-in-out infinite;
+}
+@keyframes headShake{
+  0%, 55%, 100% { transform: rotate(0deg); }
+  61% { transform: rotate(-13deg); }
+  67% { transform: rotate(11deg); }
+  73% { transform: rotate(-9deg); }
+  79% { transform: rotate(7deg); }
+  85% { transform: rotate(-4deg); }
+  91% { transform: rotate(2deg); }
+}
+
+.eyelid{ transform-box: fill-box; transform-origin: 50% 0%; transform: scaleY(0); }
+.eye-l .eyelid{ animation: blink 4.6s ease-in-out infinite; }
+.eye-r .eyelid{ animation: blink 4.6s ease-in-out infinite; animation-delay: .04s; }
+@keyframes blink{
+  0%, 92%, 100% { transform: scaleY(0); }
+  95%, 97%   { transform: scaleY(1); }
+}
+
+.antenna-dot{
+  transform-box: fill-box; transform-origin: 50% 50%;
+  animation: antennaBlip 1.5s ease-in-out infinite;
+}
+@keyframes antennaBlip{
+  0%, 100% { opacity: 1; r: 7px; }
+  50%      { opacity: .35; r: 5px; }
+}
+
+.mouth{ transform-box: fill-box; transform-origin: 50% 0%; animation: mouthWobble 3.4s ease-in-out infinite; }
+@keyframes mouthWobble{
+  0%, 55%, 100% { transform: scaleX(1); }
+  70%, 82%      { transform: scaleX(0.85); }
+}
+
+.no-badge{
+  transform-box: fill-box; transform-origin: 50% 50%;
+  animation: badgePop 2.6s ease-in-out infinite;
+}
+@keyframes badgePop{
+  0%, 100% { transform: scale(0.9) rotate(0deg); opacity: .85; }
+  50%      { transform: scale(1.12) rotate(-8deg); opacity: 1; }
+}
+
+@keyframes ringPulse{
+  0%, 100% { transform: scale(1);    opacity: .8; }
+  50%      { transform: scale(1.14); opacity: .35; }
+}
+
+.denied-title{
+  font-family: var(--font-display);
+  letter-spacing: .06em;
+  color: var(--red);
+  margin-bottom: 6px;
+}
+.denied-title .letters{ display: inline-flex; }
+.denied-title .letters span{
+  display: inline-block;
+  animation: letterDrop .6s cubic-bezier(.34,1.56,.64,1) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+.denied-title .letters .gap{ width: .5ch; }
+@keyframes letterDrop{
+  0%   { transform: translateY(-16px) scale(0.6); opacity: 0; }
+  60%  { transform: translateY(2px) scale(1.08); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.denied-sub{
+  color: var(--text-dim) !important;
+  font-weight: 500;
+  font-size: 0.92rem !important;
+  margin-bottom: 6px !important;
+  animation: subFadeIn .5s ease .5s both;
+}
+@keyframes subFadeIn{
+  from{ opacity: 0; transform: translateY(4px); }
+  to  { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .denied-mascot *, .denied-title .letters span, .denied-sub, .mascot-ring{
+    animation: none !important;
+  }
+}
